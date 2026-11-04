@@ -1,0 +1,447 @@
+/* Rương đồ 30 ô (bản online) + bảng tỉ lệ cá / hộp server ở Tiệm Câu Cá & Tiệm Diều */
+
+.chestv {
+  --cv-bg: #171c26;
+  --cv-card: #212837;
+  --cv-cell: #2a3244;
+  --cv-line: #3a4458;
+  --cv-ink: #e9eef7;
+  --cv-muted: #93a0b8;
+  --cv-gold: #f2c230;
+  --cv-red: #ff5a4f;
+  position: relative;
+  background: linear-gradient(180deg, #1b2130, var(--cv-bg));
+  color: var(--cv-ink);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: inset 0 0 0 1px var(--cv-line);
+}
+
+.chestv-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.chestv-title {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+}
+.chestv-title b {
+  font-size: 18px;
+  letter-spacing: 0.2px;
+}
+.chestv-title b span {
+  color: var(--cv-gold);
+}
+.chestv-title b span.full {
+  color: var(--cv-red);
+}
+.chestv-title small {
+  color: var(--cv-muted);
+  font-size: 12px;
+}
+.chestv-wallet {
+  display: flex;
+  gap: 6px;
+}
+.chestv-wallet span {
+  background: var(--cv-card);
+  border: 1px solid var(--cv-line);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.chestv-refresh {
+  color: var(--cv-ink);
+  background: var(--cv-card);
+  border: 1px solid var(--cv-line);
+}
+.chestv-refresh .spin {
+  display: inline-block;
+  animation: chestv-spin 0.9s linear infinite;
+}
+@keyframes chestv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.chestv-bar {
+  height: 5px;
+  background: var(--cv-cell);
+  border-radius: 99px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+.chestv-bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #4fc3f7, var(--cv-gold));
+  transition: width 0.3s;
+}
+.chestv-bar i.full {
+  background: var(--cv-red);
+}
+
+.chestv-grid {
+  display: grid;
+  /* ô tối đa 84px → 6×5 = 30 ô luôn vừa khung, không phải cuộn */
+  grid-template-columns: repeat(var(--cols, 6), minmax(0, 84px));
+  justify-content: center;
+  gap: 8px;
+}
+
+.cslot {
+  --rc: #6d7a8a;
+  position: relative;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  border-radius: 12px;
+  border: 2px solid var(--rc);
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--rc) 28%, var(--cv-cell)), var(--cv-cell) 70%);
+  color: var(--cv-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+.cslot:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--rc) 45%, transparent);
+}
+.cslot.sel {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.cslot.empty {
+  border: 2px dashed var(--cv-line);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: default;
+  box-shadow: none;
+}
+.cslot.empty:hover {
+  transform: none;
+}
+.cslot-emoji {
+  font-size: clamp(20px, 5.5vw, 34px);
+  line-height: 1;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.4));
+}
+.cslot-qty {
+  position: absolute;
+  right: 4px;
+  bottom: 3px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 2px #000, 0 0 2px #000;
+}
+.cslot-exp {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  font-size: 9px;
+  line-height: 1.15;
+  font-weight: 700;
+  background: rgba(10, 14, 22, 0.8);
+  border-radius: 6px;
+  padding: 1px 2px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #cfe3ff;
+}
+.cslot-exp.soon {
+  color: #ffb4a8;
+}
+.cslot-exp.perm {
+  left: auto;
+  right: 3px;
+  bottom: 3px;
+  font-size: 11px;
+  color: var(--cv-gold);
+  padding: 0 3px;
+}
+.cslot-eq {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #34c759;
+  color: #fff;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px var(--cv-bg);
+}
+.cslot.eq {
+  box-shadow: 0 0 0 2px #34c75966, 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.chestv-hint,
+.chestv-err {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--cv-muted);
+}
+.chestv-err {
+  color: #ffb4a8;
+}
+.chestv-empty {
+  text-align: center;
+  padding: 24px 8px;
+  color: var(--cv-muted);
+}
+.chestv-empty span {
+  font-size: 40px;
+}
+
+/* ---------------- popover chi tiết */
+.cpop-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 10, 16, 0.55);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  z-index: 5;
+  animation: cpop-fade 0.12s ease-out;
+}
+@keyframes cpop-fade {
+  from {
+    opacity: 0;
+  }
+}
+.cpop {
+  --rc: #6d7a8a;
+  position: relative;
+  width: min(360px, 100%);
+  background: var(--cv-card);
+  border: 2px solid var(--rc);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 24px color-mix(in srgb, var(--rc) 35%, transparent);
+  animation: cpop-in 0.16s ease-out;
+}
+@keyframes cpop-in {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+}
+.cpop-x {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  color: var(--cv-muted);
+}
+.cpop-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-right: 24px;
+}
+.cpop-emoji {
+  font-size: 40px;
+  width: 58px;
+  height: 58px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--rc) 25%, var(--cv-cell));
+}
+.cpop-head b {
+  display: block;
+  font-size: 16px;
+}
+.cpop-head small {
+  color: var(--cv-muted);
+  font-size: 12px;
+}
+.cpop-rar {
+  color: var(--rc);
+  font-weight: 800;
+}
+.cpop-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--cv-muted);
+}
+.cpop-facts b {
+  color: var(--cv-ink);
+}
+.cpop-facts b.perm {
+  color: var(--cv-gold);
+}
+.cpop-on {
+  color: #6be38a;
+  font-weight: 700;
+}
+.cpop-qty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--cv-muted);
+  margin-bottom: 10px;
+}
+.cpop-qty input {
+  width: 80px;
+  background: var(--cv-cell);
+  color: var(--cv-ink);
+  border: 1px solid var(--cv-line);
+  border-radius: 8px;
+  padding: 5px 8px;
+  font-size: 14px;
+}
+.cpop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cpop-actions .btn {
+  flex: 1 1 auto;
+}
+.cpop-confirm p {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #ffd2cc;
+}
+
+@media (max-width: 520px) {
+  .chestv {
+    padding: 8px;
+  }
+  .chestv-grid {
+    gap: 5px;
+  }
+  .cslot {
+    border-radius: 9px;
+  }
+  .cslot-exp {
+    font-size: 8px;
+  }
+  .cslot-qty {
+    font-size: 10px;
+  }
+  .cslot-eq {
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
+    top: -4px;
+    right: -4px;
+  }
+}
+
+/* nút mở rương trong Hành trang */
+.inv-tab.srv-chest-tab {
+  margin-left: auto;
+  border-style: dashed;
+}
+
+/* ---------------- Tiệm Câu Cá / Tiệm Diều bản online */
+.srv-dur {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin: 10px 0 4px;
+  font-size: 12px;
+}
+.srv-dur span {
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-weight: 700;
+}
+.srv-dur span.perm {
+  background: linear-gradient(90deg, #f2c230, #ff8a3d);
+  color: #3a2200;
+}
+
+.srv-rates {
+  margin-top: 14px;
+  background: #1d2330;
+  color: #e9eef7;
+  border-radius: 12px;
+  padding: 10px;
+}
+.srv-rates-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+.srv-rates-head select {
+  background: #2a3244;
+  color: #e9eef7;
+  border: 1px solid #3a4458;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  max-width: 100%;
+}
+.srv-rar-sum {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 8px 0;
+}
+.srv-rar-sum span {
+  border: 1px solid;
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.srv-rate-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.srv-rate-table th {
+  text-align: left;
+  color: #93a0b8;
+  font-weight: 600;
+  border-bottom: 1px solid #3a4458;
+  padding: 4px;
+}
+.srv-rate-table td {
+  padding: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.srv-rate-table td:last-child,
+.srv-rate-table th:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.srv-note {
+  display: block;
+  margin-top: 6px;
+  color: #93a0b8;
+  font-size: 11px;
+}

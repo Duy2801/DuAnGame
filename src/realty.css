@@ -1,0 +1,278 @@
+/* ================================================================ BẤT ĐỘNG SẢN: Sàn BĐS, sảnh chung cư, chi tiết căn */
+
+.tier-1 { --tc: #5fb0a8; --tc2: #12302e; }
+.tier-2 { --tc: #4a9ae8; --tc2: #10233e; }
+.tier-3 { --tc: #b070ff; --tc2: #241040; }
+.tier-4 { --tc: #f2c230; --tc2: #3a2606; }
+
+.realty, .tower-view { color: #f4ecd8; }
+.panel:has(.realty), .panel:has(.tower-view) { background: linear-gradient(180deg, #121a2a, #0a0f18); border-color: #d9a830; }
+.panel:has(.realty) .panel-head, .panel:has(.tower-view) .panel-head {
+  background: linear-gradient(90deg, #1f2a3a, #2c3a52 50%, #1f2a3a); border-bottom-color: #d9a830;
+}
+.realty .tabs .tab-btn { background: #1f2a3a; color: #d8ccb0; border-color: #d9a830; }
+.realty .tabs .tab-btn.on { background: linear-gradient(180deg, #f2c230, #c9971f); color: #2a1c04; }
+.realty .muted, .tower-view .muted { color: #8a94a8; }
+
+.realty-split { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+@media (min-width: 761px) { .realty-split > :last-child { position: sticky; top: 0; } }
+@media (max-width: 760px) { .realty-split { grid-template-columns: 1fr; } }
+
+/* ---------- Biển hiệu Sàn BĐS ---------- */
+.realty-sign {
+  position: relative; overflow: hidden; text-align: center; padding: 14px 10px 12px; margin-bottom: 12px; border-radius: 14px;
+  background: radial-gradient(circle at 50% -40%, rgba(242, 194, 48, 0.45), transparent 60%), linear-gradient(170deg, #24364e, #0e1626);
+  border: 2px solid #d9a830; box-shadow: 0 0 0 2px #0a0f18, 0 0 24px rgba(242, 194, 48, 0.25);
+}
+.realty-sign::after {
+  content: ''; position: absolute; top: -50%; left: -60%; width: 30%; height: 200%; transform: rotate(25deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent); animation: shine 4s ease-in-out infinite; pointer-events: none;
+}
+.realty-sign-top { display: block; font-size: 11px; letter-spacing: 4px; color: #9ff0e8; font-weight: 800; }
+.realty-sign b {
+  display: block; font-size: clamp(18px, 4.4vw, 26px); letter-spacing: 1px; font-weight: 900;
+  background: linear-gradient(180deg, #fff3b0, #f2c230 55%, #b98112); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 2px 0 #000);
+}
+.realty-sign small { color: #b8c4d8; font-size: 11.5px; }
+.realty .npc-quote, .tower-view .npc-quote { background: #1f2a3a; border-color: #3a4e6e; box-shadow: none; }
+.realty .npc-quote::after { background: #1f2a3a; border-color: #3a4e6e; }
+.realty .npc-quote p { color: #e8dcc0; }
+.realty .npc-quote b { color: #f2c230; }
+
+/* ---------- Danh mục sở hữu ---------- */
+.portfolio { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+@media (max-width: 560px) { .portfolio { grid-template-columns: repeat(2, 1fr); } }
+.portfolio > div {
+  display: flex; flex-direction: column; align-items: center; padding: 8px 4px; border-radius: 12px; text-align: center;
+  background: linear-gradient(180deg, #1f2a3a, #141c2a); border: 1.5px solid #3a4e6e;
+}
+.portfolio b { color: #ffe27a; font-size: 15px; font-variant-numeric: tabular-nums; }
+.portfolio small { color: #8a94a8; font-size: 10.5px; }
+
+/* ---------- Thẻ rao bán ---------- */
+.listing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.listing {
+  position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 22px 8px 10px;
+  text-align: center; color: #fff; border-radius: 14px; border: 2px solid var(--tc);
+  background: radial-gradient(circle at 50% 28%, color-mix(in srgb, var(--tc) 40%, transparent), transparent 62%), linear-gradient(170deg, var(--tc2), #070a10 90%);
+  box-shadow: 0 3px 0 #05070c, inset 0 0 14px color-mix(in srgb, var(--tc) 25%, transparent); transition: transform 0.12s;
+}
+.listing:hover { transform: translateY(-2px); }
+.listing.on { outline: 3px solid #fff3b0; outline-offset: 1px; }
+.listing.locked { filter: saturate(0.4) brightness(0.8); }
+.listing.tier-4::after {
+  content: ''; position: absolute; top: -50%; left: -60%; width: 40%; height: 200%; transform: rotate(25deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent); animation: shine 3.2s ease-in-out infinite; pointer-events: none;
+}
+.listing-badge {
+  position: absolute; top: 0; left: 0; right: 0; font-size: 10px; font-weight: 900; letter-spacing: 1px; padding: 3px 0;
+}
+.listing-badge.sale { background: linear-gradient(90deg, #c8302a, #e8402a, #c8302a); animation: pulse 1.6s infinite; }
+.listing-badge.mine { background: #2f8a3a; }
+.listing-badge.lock { background: #3a3a46; color: #b8b8c8; }
+.listing-emoji { font-size: 38px; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.6)); }
+.listing.tier-4 .listing-emoji, .listing.tier-3 .listing-emoji { animation: float 2.6s ease-in-out infinite; }
+.listing-name { font-size: 13.5px; line-height: 1.2; text-shadow: 0 2px 0 #000; }
+.listing-place { font-size: 10.5px; color: #b8c4d8; line-height: 1.25; }
+.listing-meta { font-size: 10.5px; color: #d8ccb0; }
+.listing-price {
+  margin-top: 4px; padding: 3px 10px; border-radius: 999px; font-weight: 900; font-size: 13px; color: #2a1c04;
+  background: linear-gradient(180deg, #ffe27a, #f2c230); box-shadow: 0 2px 0 #8a6410;
+}
+.listing.owned .listing-price { background: #2f8a3a; color: #eaffd8; box-shadow: 0 2px 0 #1a5a22; }
+
+/* ---------- Chi tiết căn ---------- */
+.prop-detail {
+  position: relative; padding: 12px; border-radius: 16px; border: 2px solid var(--tc);
+  background: radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--tc) 30%, transparent), transparent 55%), linear-gradient(170deg, #1a2436, #0a0f18);
+  box-shadow: 0 0 0 2px #05070c, 0 0 22px color-mix(in srgb, var(--tc) 30%, transparent); color: #f4ecd8; text-align: left;
+}
+.prop-hero { display: flex; gap: 12px; align-items: center; }
+.prop-emoji {
+  width: 64px; height: 64px; flex-shrink: 0; display: grid; place-items: center; font-size: 38px; border-radius: 14px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--tc) 50%, transparent), var(--tc2)); border: 2px solid var(--tc);
+}
+.prop-detail h2 { margin: 2px 0; font-size: 18px; color: #fff3c4; text-shadow: 0 2px 0 #000; }
+.prop-tier { font-size: 10px; font-weight: 900; letter-spacing: 1px; padding: 1px 8px; border-radius: 6px; background: var(--tc); color: #0a0f18; }
+.prop-place { margin: 0; font-size: 12px; color: #b8c4d8; }
+.prop-specs { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 8px; }
+.prop-specs span { font-size: 11.5px; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); }
+.prop-specs .bad { color: #ff9a8a; border-color: #8a3a2a; }
+.prop-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.prop-stats > div { display: flex; flex-direction: column; align-items: center; padding: 7px 2px; border-radius: 10px; background: rgba(0, 0, 0, 0.35); }
+.prop-stats b { font-size: 17px; color: #ffe27a; }
+.prop-stats small { font-size: 10.5px; color: #8a94a8; }
+.prop-perks { list-style: none; padding: 0; margin: 10px 0; display: grid; gap: 4px; font-size: 13px; }
+.prop-price { display: flex; flex-direction: column; align-items: center; padding: 8px; border-radius: 12px; background: rgba(0, 0, 0, 0.35); }
+.prop-price span { font-size: 11px; color: #8a94a8; letter-spacing: 2px; text-transform: uppercase; }
+.prop-price b { font-size: 24px; color: #ffe27a; text-shadow: 0 0 12px rgba(242, 194, 48, 0.5); font-variant-numeric: tabular-nums; }
+.prop-price small { font-size: 11px; color: #8a94a8; }
+.prop-buy:not(:disabled) { animation: urglow 1.8s ease-in-out infinite; --rc: #f2c230; }
+.prop-owned { padding: 8px 10px; border-radius: 10px; background: rgba(47, 138, 58, 0.25); border: 1.5px solid #3fae4a; color: #b8ffb0; font-weight: 700; font-size: 13px; text-align: center; }
+.prop-detail.owned { border-color: #3fae4a; }
+
+/* ---------- Sảnh chung cư ---------- */
+.tower-hero {
+  display: flex; align-items: center; gap: 12px; padding: 12px; margin-bottom: 12px; border-radius: 14px;
+  background: linear-gradient(120deg, #2f8f8a, #12302e); border: 2px solid #5cc4bc;
+}
+.tv-sky .tower-hero { background: linear-gradient(120deg, #3a2606, #1b2f4d 60%); border-color: #f2c230; box-shadow: 0 0 22px rgba(242, 194, 48, 0.3); }
+.tower-hero h2 { margin: 0; color: #fff3c4; text-shadow: 0 2px 0 #000; font-size: 19px; }
+.tower-hero p { margin: 2px 0 0; font-size: 12.5px; color: #d8e4f0; }
+.tower-hero-emoji { font-size: 44px; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.5)); }
+.tower-count { display: flex; flex-direction: column; align-items: center; padding: 6px 10px; border-radius: 12px; background: rgba(0, 0, 0, 0.35); }
+.tower-count b { font-size: 24px; color: #ffe27a; line-height: 1; }
+.tower-count small { font-size: 10px; color: #d8ccb0; white-space: nowrap; }
+
+.tower-cut { display: flex; flex-direction: column; gap: 3px; padding: 0 6px; border-left: 5px solid #2f8f8a; border-right: 5px solid #2f8f8a; background: #ece4d0; border-radius: 6px 6px 0 0; }
+.tv-sky .tower-cut { background: #1b2f4d; border-color: #d9a830; }
+.tower-roof {
+  margin: 0 -11px 4px; padding: 6px; text-align: center; font-size: 11.5px; font-weight: 800; border-radius: 8px 8px 0 0;
+  background: #2f8f8a; color: #fff;
+}
+.tv-sky .tower-roof { background: linear-gradient(180deg, #ffe27a, #c9971f); color: #2a1c04; }
+.tower-floor { display: grid; grid-template-columns: 30px repeat(var(--cols), 1fr); gap: 4px; align-items: stretch; }
+.tower-floor.whole, .tower-floor.lobby { grid-template-columns: 30px 1fr; }
+.floor-no { display: grid; place-items: center; font-size: 10.5px; font-weight: 900; color: #5a6a72; }
+.tv-sky .floor-no { color: #d9a830; }
+.unit {
+  min-height: 42px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: 6px;
+  border: 2px solid #1f6a66; font-size: 18px; line-height: 1.1; padding: 2px;
+}
+.unit small { font-size: 9.5px; font-weight: 700; }
+.unit.taken { background: #9fd3f0; color: #2a4a5a; opacity: 0.8; }
+.tv-sky .unit.taken { background: #2c5a8a; border-color: #162640; color: #b8c8dc; }
+.unit.taken span { filter: grayscale(0.3); font-size: 15px; }
+.unit.sale {
+  color: #fff; border-color: var(--tc); background: linear-gradient(180deg, color-mix(in srgb, var(--tc) 55%, #0a0f18), #0a0f18);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--tc) 60%, transparent); animation: unitblink 1.6s ease-in-out infinite;
+}
+.unit.sale small { color: #ffe27a; }
+.unit.sale.on { outline: 3px solid #fff3b0; outline-offset: 1px; animation: none; }
+.unit.sale.locked { filter: saturate(0.4) brightness(0.8); animation: none; }
+.unit.sale.owned { background: linear-gradient(180deg, #ffe27a, #f2a020); border-color: #fff3b0; animation: none; box-shadow: 0 0 14px rgba(255, 210, 58, 0.8); }
+.unit.sale.owned small { color: #4a3205; }
+@keyframes unitblink { 50% { box-shadow: 0 0 18px var(--tc); } }
+.lobby-cell { font-size: 11.5px; font-weight: 700; background: #24364e; color: #ffe8b0; border-color: #f2c230; }
+.tower-ground { height: 8px; margin: 2px -11px 0; background: #7d7b76; border-top: 2px solid #9a9892; }
+
+/* ================================================================ KHÔNG GIAN BÊN TRONG NHÀ & NỘI THẤT THEO ĐẲNG CẤP */
+
+.interior-stage {
+  position: relative; overflow: hidden; border-radius: 16px; padding: 12px; margin-bottom: 12px;
+  border: 2.5px solid var(--rm-border, #8a6432);
+  background: var(--rm-bg, linear-gradient(180deg, #3c2918 0%, #24170c 100%));
+  color: #fff5e0; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* 6 cấp độ kiến trúc từ nhà gỗ khởi đầu -> Penthouse Đế Vương Hoàng Kim */
+.room-starter {
+  --rm-border: #8a6a42;
+  --rm-bg: linear-gradient(180deg, #4a3520 0%, #2e2012 100%);
+  --rm-floor: repeating-linear-gradient(90deg, #5c4024 0 24px, #4e351d 24px 26px);
+}
+.room-cozy {
+  --rm-border: #5fb0a8;
+  --rm-bg: linear-gradient(180deg, #274846 0%, #162b2a 100%);
+  --rm-floor: repeating-linear-gradient(90deg, #704e2e 0 28px, #5c3f24 28px 30px);
+}
+.room-modern {
+  --rm-border: #4a9ae8;
+  --rm-bg: linear-gradient(180deg, #1f3c5c 0%, #122438 100%);
+  --rm-floor: repeating-linear-gradient(90deg, #8c6942 0 32px, #785836 32px 34px);
+}
+.room-grand {
+  --rm-border: #b070ff;
+  --rm-bg: radial-gradient(circle at 50% 0%, rgba(176, 112, 255, 0.35), transparent 65%), linear-gradient(180deg, #2e1d4a 0%, #180f29 100%);
+  --rm-floor: repeating-linear-gradient(45deg, #5e2c38 0 20px, #4a202a 20px 40px);
+}
+.room-luxury {
+  --rm-border: #3fe0d0;
+  --rm-bg: radial-gradient(circle at 50% 0%, rgba(63, 224, 208, 0.35), transparent 65%), linear-gradient(180deg, #15354a 0%, #0b1c28 100%);
+  --rm-floor: linear-gradient(135deg, #2b4458 25%, #345269 25%, #345269 50%, #2b4458 50%, #2b4458 75%, #345269 75%, #345269 100%);
+}
+.room-imperial {
+  --rm-border: #ffd23a;
+  --rm-bg: radial-gradient(circle at 50% -10%, rgba(255, 210, 58, 0.55), transparent 62%), linear-gradient(180deg, #422a08 0%, #1f1204 100%);
+  --rm-floor: radial-gradient(circle at 50% 50%, rgba(255, 215, 70, 0.35), transparent 70%), repeating-linear-gradient(90deg, #6e1a1a 0 30px, #852222 30px 60px);
+  box-shadow: 0 0 26px rgba(255, 210, 58, 0.45);
+}
+
+.interior-header {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px;
+}
+.interior-header h3 { margin: 3px 0 2px; font-size: 18px; color: #fff6cc; text-shadow: 0 2px 0 #000; }
+.interior-header small { color: #d8ccb8; font-size: 11.5px; display: block; }
+.interior-rank-badge {
+  display: inline-block; font-size: 11px; font-weight: 900; padding: 2px 9px; border-radius: 999px;
+  background: var(--rm-border, #f2c230); color: #120c04; letter-spacing: 0.5px;
+}
+.interior-mult-box {
+  display: flex; flex-direction: column; align-items: center; padding: 6px 10px; border-radius: 12px;
+  background: rgba(0, 0, 0, 0.45); border: 1.5px solid var(--rm-border, #f2c230); flex-shrink: 0;
+}
+.interior-mult-box b { font-size: 18px; color: #ffe27a; line-height: 1.1; }
+.interior-mult-box small { font-size: 10px; color: #d8ccb8; white-space: nowrap; }
+
+.interior-room-canvas {
+  border-radius: 12px; overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.25);
+}
+.interior-wall-row {
+  display: flex; justify-content: space-between; align-items: center; padding: 8px 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
+  border-bottom: 2px solid rgba(255, 255, 255, 0.12);
+}
+.interior-window {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 4px 10px; border-radius: 8px; background: rgba(140, 215, 255, 0.16); border: 1.5px solid rgba(180, 235, 255, 0.38);
+  font-size: 12px; font-weight: 700; color: #e8f8ff;
+}
+.interior-ambi { display: flex; gap: 6px; font-size: 16px; }
+.interior-chandelier { font-size: 20px; filter: drop-shadow(0 0 8px #ffe680); animation: pulse 2s infinite; }
+
+.interior-floor-stage {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 12px;
+  background: var(--rm-floor); min-height: 128px; flex-wrap: wrap;
+}
+.interior-furn-side {
+  display: flex; flex-wrap: wrap; gap: 6px; flex: 1; min-width: 150px; justify-content: center;
+}
+.interior-furn-spot {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 58px; height: 58px; border-radius: 12px; padding: 4px;
+  background: rgba(15, 20, 30, 0.72); border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #fff5e0; cursor: pointer; transition: transform 0.14s, border-color 0.14s;
+}
+.interior-furn-spot.interactive { border-color: #ffe27a; box-shadow: 0 0 10px rgba(255, 226, 122, 0.28); }
+.interior-furn-spot:hover { transform: translateY(-3px) scale(1.05); border-color: #fff; }
+.furn-spot-emoji { font-size: 24px; line-height: 1.1; }
+.interior-furn-spot small { font-size: 9.5px; color: #ffe27a; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 52px; }
+
+.interior-empty-hint {
+  padding: 10px 14px; border-radius: 10px; background: rgba(0, 0, 0, 0.5); border: 1.5px dashed rgba(255, 255, 255, 0.35);
+  font-size: 12px; color: #ffe8b0; cursor: pointer; text-align: center;
+}
+.interior-avatar-center {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 6px 14px; border-radius: 14px; background: radial-gradient(circle, rgba(255, 240, 180, 0.25), rgba(0, 0, 0, 0.45));
+  border: 1.5px solid rgba(255, 230, 140, 0.4);
+}
+.interior-floor-tag { font-size: 10px; color: #ffe8b0; margin-top: 2px; font-weight: 700; }
+
+.interior-summary-bar {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;
+  margin-top: 10px; padding: 8px 10px; border-radius: 10px;
+  background: rgba(0, 0, 0, 0.45); font-size: 12px;
+}
+.interior-summary-bar b { color: #ffe27a; }
+
+.interior-buy-banner {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-top: 10px; padding: 10px 12px; border-radius: 12px;
+  background: linear-gradient(90deg, rgba(242, 194, 48, 0.25), rgba(40, 25, 5, 0.75));
+  border: 1.5px solid #f2c230;
+}
+.interior-buy-banner b { display: block; color: #fff3b0; font-size: 13.5px; }
+.interior-buy-banner small { color: #e8dcc0; font-size: 11.5px; }

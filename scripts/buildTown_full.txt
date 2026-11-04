@@ -1,0 +1,77 @@
+function buildTown(info: MapInfo): Omit<MapData, 'info'> {
+1046:   const id = info.id as TownMapId;
+1047:   const cv = Object.assign(makeCanvas(info, 2025 + info.ox * 7 + info.oy), { fences: [] as Prop[] });
+1048:   const { rnd, ground, solid, reserved, w, h, ox, oy } = { ...cv, w: info.w, h: info.h, ox: info.ox, oy: info.oy };
+1049:   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) ground[y][x] = rnd() < 0.75 ? TILE.GRASS : rnd() < 0.85 ? TILE.GRASS2 : TILE.FLOWERS;
+1050:   PAINT[id](cv);
+1051: 
+1052:   const structures = STRUCTURES.filter((s) => s.m === id);
+1053:   for (const s of structures) {
+1054:     const bottom = Math.ceil(s.ty + s.th);
+1055:     for (let y = bottom - s.solidRows; y < bottom; y++) for (let x = s.tx; x < s.tx + s.tw; x++) solid[y - oy][x - ox] = true;
+1056:     cv.reserve(s.tx - 1, Math.floor(s.ty) - 1, s.tx + s.tw, bottom + 1);
+1057:   }
+1058:   const lamps = LAMPS[id];
+1059:   for (const [x, y] of lamps) {
+1060:     cv.props.push({ tex: 'lamp', x: (x - ox) * T + 8, y: (y - oy) * T + 16 });
+1061:     cv.reserve(x, y, x, y);
+1062:   }
+1063:   const waypoints = WAYPOINTS.filter((wp) => wp.m === id);
+1064:   for (const wp of waypoints) cv.place('waystone', Math.floor(wp.x), Math.floor(wp.y - 1.6));
+1065: 
+1066:   border(cv, () => 'tree');
+1067:   // sông chảy ra mép bản đồ: bỏ cây viền đứng trên mặt nước
+1068:   const wet = new Set(cv.water.map(([x, y]) => y * w + x));
+1069:   cv.props.splice(0, cv.props.length, ...cv.props.filter((p) => {
+1070:     const x = Math.floor(p.x / T);"}
+{"step_index":645,"source":"MODEL","type":"PLANNER_RESPONSE","status":"DONE","created_at":"2026-11-04T05:59:13Z","input_tokens":2674,"cache_read_tokens":214656,"output_tokens":517,"thinking":"`buildTown` has an issue with border generation for specific town types. The initial implementation uses a default 'tree' border, but 'glacier' should use 'snow_pine' and 'deepsea' should use either 'palm' or 'boulder'. The existing logic at line 1066 attempts to address this, but needs further review. Lines 1076-1084 seem related to generating random vegetation, which is distinct from the intended border customization.
+
+
+","tool_calls":[{"name":"read_file","args":{"EndLine":1115,"Path":"D:/HOCTAP/DuAnGame/src/world/map.ts","StartLine":1070}}]}
+{"step_index":646,"source":"MODEL","type":"GENERIC","status":"DONE","created_at":"2026-11-04T05:59:21Z","content":"Created At: 2026-11-04T12:59:21+07:00
+Completed At: 2026-11-04T12:59:21+07:00
+Showing lines 1070-1115 of 1141
+1070:     const x = Math.floor(p.x / T);
+1071:     const y = Math.floor((p.y - 16) / T);
+1072:     return !((x === 0 || y === 0 || x === w - 1 || y === h - 1) && wet.has(y * w + x));
+1073:   }));
+1074:   // cây, bụi ngẫu nhiên; bãi biển hồ câu mọc dừa
+1075:   for (let y = 1; y < h - 1; y++) {
+1076:     for (let x = 1; x < w - 1; x++) {
+1077:       if (reserved[y][x] || solid[y][x]) continue;
+1078:       const r = rnd();
+1079:       const beach = id === 'lake' && x + ox >= 53 && y + oy >= 60;
+1080:       if (r < (beach ? 0.04 : 0.035)) cv.placeL(beach ? 'palm' : 'tree', x, y);
+1081:       else if (r < 0.045 && !beach) cv.placeL('bush', x, y);
+1082:     }
+1083:   }
+1084: 
+1085:   const tr = (r: Rect): Rect => ({ x0: r.x0 - ox, y0: r.y0 - oy, x1: r.x1 - ox, y1: r.y1 - oy });
+1086:   const pt = <P extends { x: number; y: number }>(p: P): P => ({ ...p, x: p.x - ox, y: p.y - oy });
+1087:   return {
+1088:     ground, solid, props: cv.props, fences: cv.fences, water: cv.water, lava: cv.lava, glows: cv.glows,
+1089:     structures: structures.map((s) => ({ ...s, tx: s.tx - ox, ty: s.ty - oy, door: [s.door[0] - ox, s.door[1] - oy] })),
+1090:     houses: id === 'town' ? HOUSE_LOTS.map((hl) => ({ ...hl, tx: hl.tx - ox, ty: hl.ty - oy, door: [hl.door[0] - ox, hl.door[1] - oy] })) : [],
+1091:     npcs: NPCS.filter((n) => n.m === id).map((n) => ({ ...pt(n), talk: n.talk && [n.talk[0] - ox, n.talk[1] - oy] })),
+1092:     plots: id === 'farm' ? PLOT_TILES.map(([x, y]) => [x - ox, y - oy]) : [],
+1093:     ranchPen: id === 'farm' ? tr(RANCH_PEN) : null,
+1094:     chickens: id === 'farm' ? tr(CHICKEN_YARD) : null,
+1095:     kiteSpot: id === 'windhill' ? { x: 24, y: 16 } : null,
+1096:     lakeLife: id === 'lake'
+1097:       ? {
+1098:           moored: LAKE_LIFE.moored.map(pt),
+1099:           routes: LAKE_LIFE.routes.map((r) => ({ ...r, pts: r.pts.map(([x, y]) => [x - ox, y - oy] as [number, number]) })),
+1100:         }
+1101:       : undefined,
+1102:     privatePond: id === 'town' ? tr(PRIVATE_POND) : null,
+1103:     fountain: FOUNTAINS[id] ? pt(FOUNTAINS[id]!) : null,
+1104:     lamps: lamps.map(([x, y]) => [x - ox, y - oy]),
+1105:     waypoints: waypoints.map(pt),
+1106:     signs: SIGNS.filter((s) => s.m === id).map(pt),
+1107:     exits: exitsOf(info),
+1108:     districts: DISTRICTS.filter((d) => d.m === id).map((d) => ({ ...tr(d), name: d.name, level: d.level })),
+1109:     spawners: [],
+1110:   };
+1111: }
+1112: 
+1113: 
