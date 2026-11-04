@@ -1009,7 +1009,7 @@ begin
   select * into att from public.giftcode_attempts where user_id = uid for update;
   if not found then
     insert into public.giftcode_attempts (user_id, fail_count, locked_until, last_attempt)
-    values (uid, 0, now() - interval '1 second', now())
+    values (uid, 0, now() - interval '1 second', now() - interval '2 seconds')
     returning * into att;
   end if;
 
